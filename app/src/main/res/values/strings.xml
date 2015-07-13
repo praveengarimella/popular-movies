@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_popular">Popular</string>
+    <string name="action_ratings">Ratings</string>
+
+    <string name="api_key" translatable="false">f492220e75640f15612e80a0828ad90a</string>
+    <string name="popular" translatable="false">popularity.desc</string>
+    <string name="ratings" translatable="false">vote_average.desc</string>
+</resources>
