@@ -11,7 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,8 +24,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 /**
@@ -28,6 +35,7 @@ import java.net.URL;
  */
 public class MoviesFragment extends Fragment {
     private final String LOG_TAG = MoviesFragment.class.getSimpleName();
+    private GridView gridview = null;
 
     public MoviesFragment() {
     }
@@ -36,6 +44,7 @@ public class MoviesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -67,15 +76,27 @@ public class MoviesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        gridview = (GridView) rootView.findViewById(R.id.gridview);
+        //gridview.setAdapter(new ImageAdapter(getActivity(), null));
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+
+            }
+        });
+
+        return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<PopularMovie>> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
         private final String apiKey = getString(R.string.api_key);
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected ArrayList<PopularMovie> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -153,9 +174,36 @@ public class MoviesFragment extends Fragment {
             return null;
         }
 
-        private Void getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
-            JSONObject jsonObject = new JSONObject(moviesJsonStr);
-            return null;
+        @Override
+        protected void onPostExecute(ArrayList<PopularMovie> popularMovies) {
+            super.onPostExecute(popularMovies);
+            gridview.setAdapter(new ImageAdapter(getActivity(), popularMovies));
+            Log.v(LOG_TAG, "Image Adapter Set");
+        }
+
+        private ArrayList<PopularMovie> getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
+            // These are the names of the JSON objects that need to be extracted.
+            final String MDB_RESULTS = "results";
+            final String MDB_BACKDROP = "poster_path";
+            final String MDB_TITLE = "title";
+            final String MDB_PLOT = "overview";
+            final String MDB_RELEASE_DT = "release_date";
+            final String MDB_VOTE_AVG = "vote_average";
+
+            JSONObject moviesObject = new JSONObject(moviesJsonStr);
+            JSONArray moviesArray = moviesObject.getJSONArray(MDB_RESULTS);
+            ArrayList<PopularMovie> list = new ArrayList<PopularMovie>();
+            for(int i = 0; i < moviesArray.length(); i++) {
+                PopularMovie pMovie = new PopularMovie();
+                JSONObject movie = moviesArray.getJSONObject(i);
+                pMovie.setPoster(movie.getString(MDB_BACKDROP));
+                pMovie.setPlot(movie.getString(MDB_PLOT));
+                pMovie.setReleaseData(movie.getString(MDB_RELEASE_DT));
+                pMovie.setTitle(movie.getString(MDB_TITLE));
+                pMovie.setVoteAverage(movie.getString(MDB_VOTE_AVG));
+                list.add(pMovie);
+            }
+            return list;
         }
     }
 
