@@ -1,11 +1,13 @@
 package com.taramt.popularmovies;
 
+import java.io.Serializable;
+
 /**
  * Created by praveengarimella on 14/07/15.
  */
-public class PopularMovie {
+public class PopularMovie implements Serializable {
     private String poster;
-    private String releaseData;
+    private String releaseDate;
     private String plot;
     private String title;
     private String voteAverage;
@@ -18,12 +20,12 @@ public class PopularMovie {
         this.poster = poster;
     }
 
-    public String getReleaseData() {
-        return releaseData;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setReleaseData(String releaseData) {
-        this.releaseData = releaseData;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public String getPlot() {
@@ -54,7 +56,7 @@ public class PopularMovie {
     public String toString() {
         return "PopularMovie{" +
                 "poster='" + poster + '\'' +
-                ", releaseData='" + releaseData + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
                 ", plot='" + plot + '\'' +
                 ", title='" + title + '\'' +
                 ", voteAverage='" + voteAverage + '\'' +

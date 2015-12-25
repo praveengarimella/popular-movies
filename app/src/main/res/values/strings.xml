@@ -4,7 +4,7 @@
     <string name="action_popular">Popular</string>
     <string name="action_ratings">Ratings</string>
 
-    <string name="api_key" translatable="false">f492220e75640f15612e80a0828ad90a</string>
+    <string name="api_key" translatable="false">ADD YOUR API KEY</string>
     <string name="popular" translatable="false">popularity.desc</string>
     <string name="ratings" translatable="false">vote_count.desc</string>
     <string name="title_activity_movie_detail">MovieDetail</string>

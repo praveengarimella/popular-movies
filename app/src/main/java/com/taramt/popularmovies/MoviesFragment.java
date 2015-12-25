@@ -1,5 +1,6 @@
 package com.taramt.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MoviesFragment extends Fragment {
+    private final String SELECTED_MOVIE = "com.taramt.popularmovies.SELECTED_MOVIE";
     private final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private GridView gridview = null;
 
@@ -79,12 +78,16 @@ public class MoviesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         gridview = (GridView) rootView.findViewById(R.id.gridview);
-        //gridview.setAdapter(new ImageAdapter(getActivity(), null));
+        new FetchMoviesTask().execute(getString(R.string.popular));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-
+                PopularMovie movie = (PopularMovie)parent.getAdapter().getItem(position);
+                Log.v(LOG_TAG, "Selected Movie" + movie);
+                Intent intent = new Intent(getActivity(), MovieDetail.class);
+                intent.putExtra(SELECTED_MOVIE, movie);
+                startActivity(intent);
             }
         });
 
@@ -198,7 +201,7 @@ public class MoviesFragment extends Fragment {
                 JSONObject movie = moviesArray.getJSONObject(i);
                 pMovie.setPoster(movie.getString(MDB_BACKDROP));
                 pMovie.setPlot(movie.getString(MDB_PLOT));
-                pMovie.setReleaseData(movie.getString(MDB_RELEASE_DT));
+                pMovie.setReleaseDate(movie.getString(MDB_RELEASE_DT));
                 pMovie.setTitle(movie.getString(MDB_TITLE));
                 pMovie.setVoteAverage(movie.getString(MDB_VOTE_AVG));
                 list.add(pMovie);
