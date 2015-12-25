@@ -1,0 +1,3 @@
+Popular Movies Project Stage 1
+
+I have refered to the material, including source code fetching data from API, from the Udacity course Developing Android Apps.
